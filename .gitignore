@@ -3,6 +3,12 @@
 memo.md
 certs/*
 !certs/.gitkeep
+openldap/certs/*
+!openldap/certs/.gitkeep
+openldap/ldap/*
+!openldap/ldap/.gitkeep
+openldap/slapd.d/*
+!openldap/slapd.d/.gitkeep
 
 # Created by https://www.toptal.com/developers/gitignore/api/windows,linux,vim,emacs,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,linux,vim,emacs,visualstudiocode

@@ -9,9 +9,48 @@ volumes: # {{{
     driver: local
   nginx-conf.d:
     driver: local
+  phpldapadmin-www:
+    driver: local
 # }}}
 
 services:
+
+  &openldap openldap: # {{{
+    extends:
+      file: common.yml
+      service: common
+    image: osixia/openldap:stable
+    hostname: *openldap
+    environment:
+      - LDAP_ORGANISATION=Example Inc.
+      - LDAP_DOMAIN=example.org
+      - LDAP_BASE_DN=
+      - LDAP_ADMIN_PASSWORD=admin
+      - LDAP_CONFIG_PASSWORD=config
+      - LDAP_READONLY_USER=false
+      - LDAP_OPENLDAP_UID=${LDAP_OPENLDAP_UID:-911}
+      - LDAP_OPENLDAP_GID=${LDAP_OPENLDAP_GID:-911}
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./openldap/ldap:/var/lib/ldap
+      - ./openldap/slapd.d:/etc/ldap/slapd.d
+      - ./openldap/certs:/container/service/slapd/assets/certs/
+  # }}}
+
+  &phpldapadmin phpldapadmin: # {{{
+    extends:
+      file: common.yml
+      service: common
+    image: osixia/phpldapadmin:stable
+    hostname: *phpldapadmin
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: *openldap
+    depends_on:
+      - *openldap
+    volumes:
+      - phpldapadmin-www:/var/www/phpldapadmin
+  # }}}
 
   &omgwtfssl omgwtfssl: # {{{
     extends:
@@ -56,6 +95,7 @@ services:
       retries: 10
     depends_on:
       - *omgwtfssl
+      - *phpldapadmin
   # }}}
 
 # vim:set filetype=docker-compose expandtab shiftwidth=2 tabstop=2 foldmethod=marker:
