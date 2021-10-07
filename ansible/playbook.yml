@@ -1,0 +1,65 @@
+---
+- hosts: all
+  become: no
+  gather_facts: no
+  vars:
+    ldap_bind:  &ldap_bind
+      server_uri: "{{ ldap_server_uri }}"
+      bind_dn: "{{ ldap_bind_dn }}"
+      bind_pw: "{{ ldap_bind_pw }}"
+  pre_tasks:
+    - name: Create default group.
+      set_fact:
+        ldap_default_group:
+          cn: 'users'
+          member: "{{ ldap_users | map(attribute='uid') | list }}"
+    - name: Create merged groups.
+      set_fact:
+        ldap_merged_groups: "{{ ldap_groups + [ldap_default_group] }}"
+  roles:
+  tasks:
+    - name: Add base organizational unit if absent.
+      community.general.ldap_entry:
+        <<: *ldap_bind
+        dn: "{{ item }},{{ lookup('env', 'LDAP_BASE_DN') }}"
+        state: present
+        objectClass: organizationalUnit
+      with_items:
+        - ou=Users
+        - ou=Groups
+
+    - name: Add users if absent.
+      community.general.ldap_entry:
+        <<: *ldap_bind
+        dn: "cn={{ item.uid }},ou=Users,{{ lookup('env', 'LDAP_BASE_DN') }}"
+        state: present
+        objectClass:
+          - inetOrgPerson
+          - posixAccount
+          - shadowAccount
+        attributes: "{{ item }}"
+      with_items: "{{ ldap_users }}"
+
+    - name: Add groups if absent.
+      community.general.ldap_entry:
+        <<: *ldap_bind
+        dn: "cn={{ item.cn }},ou=Groups,{{ lookup('env', 'LDAP_BASE_DN') }}"
+        state: present
+        objectClass: groupOfNames
+        attributes:
+          cn: "{{ item.cn }}"
+          member: "{{ item.member | map('regex_replace', '^(.*)$', 'cn=\\1,ou=Users,' + lookup('env', 'LDAP_BASE_DN')) | list }}"
+      with_items: "{{ ldap_merged_groups }}"
+
+
+    - name: Return all entries within the 'Users' organizational unit.
+      community.general.ldap_search:
+        <<: *ldap_bind
+        dn: "ou=Users,{{ lookup('env', 'LDAP_BASE_DN') }}"
+        scope: children
+      check_mode: no
+      register: ldap_groups
+    - ansible.builtin.debug:
+        var: ldap_groups
+  post_tasks:
+

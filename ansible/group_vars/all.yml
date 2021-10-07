@@ -1,0 +1,46 @@
+---
+ldap_server_uri: "ldap://{{ lookup('env', 'LDAP_HOSTS') }}"
+ldap_bind_dn: "cn=admin,{{ lookup('env', 'LDAP_BASE_DN') }}"
+ldap_bind_pw: "{{ lookup('env', 'LDAP_ADMIN_PASSWORD') }}"
+ldap_users:
+  - cn:
+      - User1
+      - user01
+    sn: Bar1
+    uid: user01
+    userPassword: password1
+    uidnumber: 2001
+    gidnumber: 2001
+    homedirectory: /home/user01
+  - cn:
+      - User2
+      - user02
+    sn: Bar2
+    uid: user02
+    userPassword: password2
+    uidnumber: 2002
+    gidnumber: 2002
+    homedirectory: /home/user02
+  - cn:
+      - User3
+      - user03
+    sn: Bar3
+    uid: user03
+    userPassword: password3
+    uidnumber: 2003
+    gidnumber: 2003
+    homedirectory: /home/user03
+  - cn:
+      - User4
+      - user04
+    sn: Bar4
+    uid: user04
+    userPassword: password4
+    uidnumber: 2004
+    gidnumber: 2004
+    homedirectory: /home/user04
+ldap_groups:
+  - cn: readers
+    member:
+      - user01
+      - user02

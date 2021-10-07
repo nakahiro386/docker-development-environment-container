@@ -23,9 +23,9 @@ services:
     hostname: *openldap
     environment:
       - LDAP_ORGANISATION=Example Inc.
-      - LDAP_DOMAIN=example.org
-      - LDAP_BASE_DN=
-      - LDAP_ADMIN_PASSWORD=admin
+      - LDAP_DOMAIN=${LDAP_DOMAIN:-example.org}
+      - LDAP_BASE_DN=${LDAP_BASE_DN:-dc=example,dc=org}
+      - LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD:-admin}
       - LDAP_CONFIG_PASSWORD=config
       - LDAP_READONLY_USER=false
       - LDAP_OPENLDAP_UID=${LDAP_OPENLDAP_UID:-911}
@@ -97,5 +97,34 @@ services:
       - *omgwtfssl
       - *phpldapadmin
   # }}}
+
+  &ansible-run ansible-run: # {{{
+    extends:
+      file: common.yml
+      service: common
+    restart: "no"
+    build:
+      context: ./ansible
+      args:
+        ANSIBLE_EXEC_UID: "${ANSIBLE_EXEC_UID:-1000}"
+        ANSIBLE_EXEC_USER: "${ANSIBLE_EXEC_USER:-ansible}"
+        ANSIBLE_EXEC_GID: "${ANSIBLE_EXEC_GID:-1000}"
+        ANSIBLE_EXEC_GROUP: "${ANSIBLE_EXEC_GROUP:-ansible}"
+    image: nakahiro386/ansible-ldap:latest
+    tty: true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./ansible:/ansible:rw
+    working_dir: /ansible
+    command: ["ansible-playbook", "playbook.yml"]
+    hostname: *ansible-run
+    environment:
+      LDAP_HOSTS: *openldap
+      LDAP_BASE_DN: ${LDAP_BASE_DN:-dc=example,dc=org}
+      LDAP_ADMIN_PASSWORD: ${LDAP_ADMIN_PASSWORD:-admin}
+    depends_on:
+      - *openldap
+  # }}}
+
 
 # vim:set filetype=docker-compose expandtab shiftwidth=2 tabstop=2 foldmethod=marker:
