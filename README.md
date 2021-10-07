@@ -21,6 +21,8 @@ $ docker-compose up -d
 
 * Docker Engine
     * 1.13.1+
+* docker-compose
+    * 1.26.2
 
 ## License
 
