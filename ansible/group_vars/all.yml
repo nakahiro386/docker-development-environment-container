@@ -40,7 +40,7 @@ ldap_users:
     gidnumber: 2004
     homedirectory: /home/user04
 ldap_groups:
-  - cn: readers
+  - cn: leaders
     member:
       - user01
       - user02

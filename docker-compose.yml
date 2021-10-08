@@ -52,6 +52,19 @@ services:
       - phpldapadmin-www:/var/www/phpldapadmin
   # }}}
 
+  &portainer portainer: # {{{
+    extends:
+      file: common.yml
+      service: common
+    image: portainer/portainer-ce:2.9.0
+    hostname: *portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./portainer/data:/data
+    depends_on:
+      - *openldap
+  # }}}
+
   &omgwtfssl omgwtfssl: # {{{
     extends:
       file: common.yml
@@ -96,6 +109,7 @@ services:
     depends_on:
       - *omgwtfssl
       - *phpldapadmin
+      - *portainer
   # }}}
 
   &ansible-run ansible-run: # {{{
