@@ -4,15 +4,18 @@
 
 * [paulczar/omgwtfssl - Docker Image | Docker Hub](https://hub.docker.com/r/paulczar/omgwtfssl)
 * [Nginx - Official Image | Docker Hub](https://hub.docker.com/_/nginx)
+* [osixia/openldap - Docker Image | Docker Hub](https://hub.docker.com/r/osixia/openldap)
+* [osixia/phpldapadmin - Docker Image | Docker Hub](https://hub.docker.com/r/osixia/phpldapadmin)
+* [portainer/portainer-ce - Docker Image | Docker Hub](https://hub.docker.com/r/portainer/portainer-ce)
 
 ## Usage
 
 * cloneしてきて起動する。
-```sh
-$ git clone https://github.com/nakahiro386/docker-development-environment-container.git dev-container
-$ cd dev-container
-$ docker-compose up -d
-```
+    ```sh
+    $ git clone https://github.com/nakahiro386/docker-development-environment-container.git dev-container
+    $ cd dev-container
+    $ docker-compose up -d
+    ```
 * `certs/ca.pem`をブラウザにインポートする。
     * IEの場合は`証明書をすべて次のストアに配置する。`を選択する。
     * 証明書ストアの`信頼されたルート証明機関`を選択する。
