@@ -51,6 +51,14 @@
           member: "{{ item.member | map('regex_replace', '^(.*)$', 'cn=\\1,ou=Users,' + lookup('env', 'LDAP_BASE_DN')) | list }}"
       with_items: "{{ ldap_merged_groups }}"
 
+    - name: Modify group members.
+      community.general.ldap_attrs:
+        <<: *ldap_bind
+        dn: "cn={{ item.cn }},ou=Groups,{{ lookup('env', 'LDAP_BASE_DN') }}"
+        state: exact
+        attributes:
+          member: "{{ item.member | map('regex_replace', '^(.*)$', 'cn=\\1,ou=Users,' + lookup('env', 'LDAP_BASE_DN')) | list }}"
+      with_items: "{{ ldap_merged_groups }}"
 
     - name: Return all entries within the 'Users' organizational unit.
       community.general.ldap_search:
