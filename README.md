@@ -7,18 +7,26 @@
 * [osixia/openldap - Docker Image | Docker Hub](https://hub.docker.com/r/osixia/openldap)
 * [osixia/phpldapadmin - Docker Image | Docker Hub](https://hub.docker.com/r/osixia/phpldapadmin)
 * [portainer/portainer-ce - Docker Image | Docker Hub](https://hub.docker.com/r/portainer/portainer-ce)
+* [Postgres - Official Image | Docker Hub](https://hub.docker.com/_/postgres)
+    * gitbucket用
+* [gitbucket/gitbucket - Docker Image | Docker Hub](https://hub.docker.com/r/gitbucket/gitbucket)
 
 ## Usage
-
 * cloneしてきて起動する。
     ```sh
     $ git clone https://github.com/nakahiro386/docker-development-environment-container.git dev-container
     $ cd dev-container
+    # 空ディレクトリでなければ起動できないため、.gitkeepが配置できない。
+    $ mkdir -p gb-postgres/pgdata
     $ docker-compose up -d
     ```
 * `certs/ca.pem`をブラウザにインポートする。
     * IEの場合は`証明書をすべて次のストアに配置する。`を選択する。
     * 証明書ストアの`信頼されたルート証明機関`を選択する。
+* `certs/cert.pem`をローカルに持ってきてgitの設定にパスを追加する。
+    ```sh
+    $ git config --global http."https://${SERVER_HOSTNAME}:${NGINX_SSL_PORT}/".sslCAInfo=/path/to/your/cert.pem
+    ```
 * portainernの設定をする。
     * 初回ログイン時、管理者ユーザ`admin`のパスワードを入力する。
     * `Allow collection of anonymous statistics.`のチェックを外す（任意）

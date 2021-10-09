@@ -65,6 +65,78 @@ services:
       - *openldap
   # }}}
 
+  &gb-postgres gb-postgres: # {{{
+    extends:
+      file: common.yml
+      service: common
+    image: postgres:14-alpine
+    hostname: *gb-postgres
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: ${GITBUCKET_POSTGRES_USER:-gitbucket}
+      POSTGRES_PASSWORD: ${GITBUCKET_POSTGRES_PASSWORD:-gitbucket}
+    volumes:
+      - ./gb-postgres/pgdata:/var/lib/postgresql/data
+    # }}}
+
+  &gitbucket gitbucket: # {{{
+    extends:
+      file: common.yml
+      service: common
+    image: gitbucket/gitbucket:4.36.1
+    hostname: *gitbucket
+    environment:
+      GITBUCKET_BASE_URL: https://${HOSTNAME}:${NGINX_SSL_PORT:-443}/gitbucket
+      # GITBUCKET_PORT: ${GITBUCKET_PORT:-8080}
+      GITBUCKET_PREFIX: /gitbucket
+      GITBUCKET_PLUGINDIR: /plugin
+      GITBUCKET_SAVE_SESSIONS: "True"
+      GITBUCKET_DB_URL: jdbc:postgresql://gb-postgres/gitbucket
+      GITBUCKET_DB_USER: ${GITBUCKET_POSTGRES_USER:-gitbucket}
+      GITBUCKET_DB_PASSWORD: ${GITBUCKET_POSTGRES_PASSWORD:-gitbucket}
+
+      # System settings
+      GITBUCKET_ALLOW_ACCOUNT_REGISTRATION: "False"
+      GITBUCKET_IS_CREATE_REPOSITORY_OPTION_PUBLIC: "True"
+      GITBUCKET_ALLOW_ANONYMOUS_ACCESS: "False"
+      GITBUCKET_LIMIT_VISIBLE_REPOSITORIES: "True"
+      GITBUCKET_ACTIVITY_LOG_LIMIT: 100
+
+      # integrations
+      ## SSH access
+      GITBUCKET_GRAVATAR: "False"
+      GITBUCKET_SSH: "True"
+      GITBUCKET_SSH_HOST: ${HOSTNAME}
+      GITBUCKET_SSH_PORT: ${GITBUCKET_SSH_PORT:-29418}
+      ## Communication
+      GITBUCKET_USE_SMTP: "False"
+      GITBUCKET_USE_SMTP_HOST: maildev
+      GITBUCKET_USE_SMTP_PORT: 25
+      GITBUCKET_USE_SMTP_FROM_ADDRESS: gitbucket@example.org
+      GITBUCKET_USE_SMTP_FROM_NAME: gitbucket
+      ## Notifications
+      GITBUCKET_NOTIFICATION: "False"
+
+      # authentication
+      GITBUCKET_LDAP_AUTHENTICATION: "True"
+      GITBUCKET_LDAP_HOST: *openldap
+      GITBUCKET_LDAP_PORT: 389
+      GITBUCKET_LDAP_BINDDN: "cn=admin,dc=example,dc=org"
+      GITBUCKET_LDAP_BIND_PASSWORD: admin
+      GITBUCKET_LDAP_BASEDN: "ou=Users,dc=example,dc=org"
+      GITBUCKET_LDAP_USERNAME_ATTRIBUTE: uid
+      GITBUCKET_LDAP_FULLNAME_ATTRIBUTE: displayName
+      GITBUCKET_LDAP_MAIL_ATTRIBUTE: mail
+    volumes:
+      - ./gitbucket/data:/gitbucket
+      - ./gitbucket/plugin:/plugin
+    ports:
+      # - ${GITBUCKET_PORT:-8080}:${GITBUCKET_PORT:-8080}
+      - ${GITBUCKET_SSH_PORT:-29418}:${GITBUCKET_SSH_PORT:-29418}
+    depends_on:
+      - *gb-postgres
+    # }}}
+
   &omgwtfssl omgwtfssl: # {{{
     extends:
       file: common.yml
@@ -110,6 +182,7 @@ services:
       - *omgwtfssl
       - *phpldapadmin
       - *portainer
+      - *gitbucket
   # }}}
 
   &ansible-run ansible-run: # {{{

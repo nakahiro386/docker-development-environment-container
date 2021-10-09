@@ -12,6 +12,7 @@ ldap_users:
     uidnumber: 2001
     gidnumber: 2001
     homedirectory: /home/user01
+    mail: user01@example.org
   - cn:
       - User2
       - user02
@@ -21,6 +22,7 @@ ldap_users:
     uidnumber: 2002
     gidnumber: 2002
     homedirectory: /home/user02
+    mail: user02@example.org
   - cn:
       - User3
       - user03
@@ -30,6 +32,7 @@ ldap_users:
     uidnumber: 2003
     gidnumber: 2003
     homedirectory: /home/user03
+    mail: user03@example.org
   - cn:
       - User4
       - user04
@@ -39,6 +42,7 @@ ldap_users:
     uidnumber: 2004
     gidnumber: 2004
     homedirectory: /home/user04
+    mail: user04@example.org
 ldap_groups:
   - cn: leaders
     member:

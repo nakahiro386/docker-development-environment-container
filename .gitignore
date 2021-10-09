@@ -11,6 +11,11 @@ openldap/slapd.d/*
 !openldap/slapd.d/.gitkeep
 portainer/data/*
 !portainer/data/.gitkeep
+gb-postgres
+gitbucket/data/*
+!gitbucket/data/.gitkeep
+gitbucket/plugin/*
+!gitbucket/plugin/.gitkeep
 
 # Created by https://www.toptal.com/developers/gitignore/api/windows,linux,vim,emacs,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,linux,vim,emacs,visualstudiocode
