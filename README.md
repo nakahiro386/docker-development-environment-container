@@ -17,8 +17,8 @@
     $ git clone https://github.com/nakahiro386/docker-development-environment-container.git dev-container
     $ cd dev-container
     # 空ディレクトリでなければ起動できないため、.gitkeepが配置できない。
-    $ mkdir -p gb-postgres/pgdata
-    $ docker-compose up -d
+    $ sudo ./init.sh
+    $ sudo docker-compose up -d
     ```
 * `certs/ca.pem`をブラウザにインポートする。
     * IEの場合は`証明書をすべて次のストアに配置する。`を選択する。

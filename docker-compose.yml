@@ -137,24 +137,6 @@ services:
       - *gb-postgres
     # }}}
 
-  &omgwtfssl omgwtfssl: # {{{
-    extends:
-      file: common.yml
-      service: common
-    image: paulczar/omgwtfssl
-    hostname: *omgwtfssl
-    read_only: true
-    restart: "no"
-    volumes:
-      - ./certs:/certs
-    environment:
-      - CA_SUBJECT=${CA_SUBJECT:-test-ca}
-      - CA_EXPIRE=${CA_EXPIRE:-60}
-      - SSL_SUBJECT=${HOSTNAME}
-      - SSL_DNS=${HOSTNAME}
-      - SSL_EXPIRE=${SSL_EXPIRE:-60}
-    # }}}
-
   &nginx nginx: # {{{
     extends:
       file: common.yml
@@ -179,7 +161,6 @@ services:
       test: ["CMD", "wget", "-q", "--spider", "-O", "/dev/null", 'http://127.0.0.1:${NGINX_PORT}/']
       retries: 10
     depends_on:
-      - *omgwtfssl
       - *phpldapadmin
       - *portainer
       - *gitbucket
