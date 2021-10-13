@@ -6,8 +6,10 @@ services:
     # image: scratch
     # image: hello-world:latest
     restart: on-failure:10
+    environment:
+      TZ: Asia/Tokyo
     volumes:
-      - &locale /etc/localtime:/etc/localtime:ro
+      - /etc/localtime:/etc/localtime:ro
     logging:
       driver: json-file
       options:
