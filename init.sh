@@ -26,3 +26,6 @@ docker run \
 -v ${CURRENT}/certs:/certs \
 --name omgwtfssl \
 paulczar/omgwtfssl
+
+cp -f "${CURRENT}/certs/cert.pem" "${CURRENT}/jenkins/build/cert.pem.override"
+cp -f "${CURRENT}/certs/cert.pem" "${CURRENT}/jenkins-agent/build/cert.pem"

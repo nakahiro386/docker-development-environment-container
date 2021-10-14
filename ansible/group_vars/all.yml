@@ -43,8 +43,20 @@ ldap_users:
     gidnumber: 2004
     homedirectory: /home/user04
     mail: user04@example.org
+  - cn:
+      - agent
+    sn: agent
+    uid: agent
+    userPassword: agent
+    uidnumber: 3000
+    gidnumber: 3000
+    homedirectory: /home/agent
+    mail: agent@example.org
 ldap_groups:
   - cn: leaders
     member:
       - user01
       - user02
+  - cn: jenkins-agent
+    member:
+      - agent

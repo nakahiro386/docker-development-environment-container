@@ -25,7 +25,7 @@
     * 証明書ストアの`信頼されたルート証明機関`を選択する。
 * `certs/cert.pem`をローカルに持ってきてgitの設定にパスを追加する。
     ```sh
-    $ git config --global http."https://${SERVER_HOSTNAME}:${NGINX_SSL_PORT}/".sslCAInfo=/path/to/your/cert.pem
+    $ git config --global http."https://${SERVER_HOSTNAME}:${NGINX_SSL_PORT}/".sslCAInfo /path/to/your/cert.pem
     ```
 * portainernの設定をする。
     * 初回ログイン時、管理者ユーザ`admin`のパスワードを入力する。

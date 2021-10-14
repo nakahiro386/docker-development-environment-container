@@ -88,7 +88,7 @@ services:
     command: ["java", "-jar", "/opt/gitbucket.war"]
     stop_signal: SIGINT
     environment:
-      GITBUCKET_BASE_URL: https://${HOSTNAME}:${NGINX_SSL_PORT:-443}/gitbucket
+      GITBUCKET_BASE_URL: https://${SSL_SUBJECT:-$HOSTNAME}:${NGINX_SSL_PORT:-443}/gitbucket
       # GITBUCKET_PORT: ${GITBUCKET_PORT:-8080}
       GITBUCKET_PREFIX: /gitbucket
       GITBUCKET_PLUGINDIR: /plugin
@@ -108,7 +108,7 @@ services:
       ## SSH access
       GITBUCKET_GRAVATAR: "False"
       GITBUCKET_SSH: "True"
-      GITBUCKET_SSH_HOST: ${HOSTNAME}
+      GITBUCKET_SSH_HOST: ${SSL_SUBJECT:-$HOSTNAME}
       GITBUCKET_SSH_PORT: ${GITBUCKET_SSH_PORT:-29418}
       ## Communication
       GITBUCKET_USE_SMTP: "False"
@@ -123,9 +123,9 @@ services:
       GITBUCKET_LDAP_AUTHENTICATION: "True"
       GITBUCKET_LDAP_HOST: *openldap
       GITBUCKET_LDAP_PORT: 389
-      GITBUCKET_LDAP_BINDDN: "cn=admin,dc=example,dc=org"
-      GITBUCKET_LDAP_BIND_PASSWORD: admin
-      GITBUCKET_LDAP_BASEDN: "ou=Users,dc=example,dc=org"
+      GITBUCKET_LDAP_BINDDN: "cn=admin,${LDAP_BASE_DN:-dc=example,dc=org}"
+      GITBUCKET_LDAP_BIND_PASSWORD: ${LDAP_ADMIN_PASSWORD:-admin}
+      GITBUCKET_LDAP_BASEDN: "ou=Users,${LDAP_BASE_DN:-dc=example,dc=org}"
       GITBUCKET_LDAP_USERNAME_ATTRIBUTE: uid
       GITBUCKET_LDAP_FULLNAME_ATTRIBUTE: displayName
       GITBUCKET_LDAP_MAIL_ATTRIBUTE: mail
@@ -138,6 +138,53 @@ services:
     depends_on:
       - *gb-postgres
     # }}}
+
+  &jenkins jenkins: # {{{
+    extends:
+      file: common.yml
+      service: common
+    build:
+      context: ./jenkins/build
+      args:
+        SSL_SUBJECT: ${SSL_SUBJECT}
+        NGINX_SSL_PORT: ${NGINX_SSL_PORT}
+    image: nakahiro386/jenkins:lts
+    stop_signal: SIGINT
+    volumes:
+      - ./jenkins/home:/var/jenkins_home:rw
+    hostname: *jenkins
+    environment:
+      SSL_SUBJECT: ${SSL_SUBJECT:-$HOSTNAME}
+      NGINX_SSL_PORT: ${NGINX_SSL_PORT:-443}
+      LDAP_HOSTS: *openldap
+      LDAP_BASE_DN: ${LDAP_BASE_DN:-dc=example,dc=org}
+      LDAP_ADMIN_PASSWORD: ${LDAP_ADMIN_PASSWORD:-admin}
+    depends_on:
+      - *openldap
+  # }}}
+
+  &jenkins-agent jenkins-agent: # {{{
+    extends:
+      file: common.yml
+      service: common
+    build:
+      context: ./jenkins-agent/build
+      args:
+        SSL_SUBJECT: ${SSL_SUBJECT}
+        NGINX_SSL_PORT: ${NGINX_SSL_PORT}
+    image: nakahiro386/jenkins-agent:openjdk8-buster
+    stop_signal: SIGINT
+    volumes:
+      - ./jenkins-agent/home:/home/jenkins-agent:rw
+    hostname: *jenkins-agent
+    environment:
+      JENKINS_URL: http://jenkins:8080/jenkins/
+      AGENT_USERNAME: agent
+      AGENT_PASSWORD: agent
+      AGENT_PROMETHEUS_PORT: 9100
+    depends_on:
+      - *jenkins
+  # }}}
 
   &nginx nginx: # {{{
     extends:
@@ -166,6 +213,7 @@ services:
       - *phpldapadmin
       - *portainer
       - *gitbucket
+      - *jenkins
   # }}}
 
   &ansible-run ansible-run: # {{{
@@ -183,7 +231,6 @@ services:
     image: nakahiro386/ansible-ldap:latest
     tty: true
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ./ansible:/ansible:rw
     working_dir: /ansible
     command: ["ansible-playbook", "playbook.yml"]

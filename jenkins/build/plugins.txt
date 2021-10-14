@@ -1,0 +1,13 @@
+configuration-as-code:latest
+configuration-as-code-groovy:latest
+ldap:latest
+matrix-auth:latest
+authorize-project:latest
+swarm:latest
+prometheus:latest
+monitoring:latest
+cloudbees-disk-usage-simple:latest
+workflow-aggregator:latest
+git:latest
+gitbucket:latest
+warnings-ng:latest

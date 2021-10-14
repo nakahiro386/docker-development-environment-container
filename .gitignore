@@ -16,6 +16,12 @@ gitbucket/data/*
 !gitbucket/data/.gitkeep
 gitbucket/plugin/*
 !gitbucket/plugin/.gitkeep
+jenkins/build/cert.pem.override
+jenkins/home/*
+!jenkins/home/.gitkeep
+jenkins-agent/build/cert.pem
+jenkins-agent/home/*
+!jenkins-agent/home/.gitkeep
 
 # Created by https://www.toptal.com/developers/gitignore/api/windows,linux,vim,emacs,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,linux,vim,emacs,visualstudiocode
