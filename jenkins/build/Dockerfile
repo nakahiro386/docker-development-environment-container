@@ -4,6 +4,8 @@ ARG SSL_SUBJECT
 ARG NGINX_SSL_PORT
 ENV JENKINS_OPTS="--prefix=/jenkins" \
     JAVA_OPTS="-Djenkins.install.runSetupWizard=false ${JAVA_OPTS:-}"
+STOPSIGNAL SIGINT
+HEALTHCHECK --retries=10 CMD ["curl", "-fsSI", "--output", "/dev/null", "http://127.0.0.1:8080/jenkins"]
 
 COPY ["plugins.txt", "cert.pem.override", "jenkins.yaml.override", "/usr/share/jenkins/ref/"]
 RUN set -x \

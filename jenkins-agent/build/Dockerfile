@@ -9,6 +9,7 @@ ARG JENKINS_AGENT_GID=1000
 ARG JENKINS_AGENT_USER=jenkins-agent
 ARG JENKINS_AGENT_GROUP=jenkins-agent
 ARG JENKINS_AGENT_HOME=/home/jenkins-agent
+STOPSIGNAL SIGINT
 
 ENV TINI_VERSION=v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
@@ -20,7 +21,6 @@ RUN set -x \
   && export DEBIAN_FRONTEND=noninteractive \
   && apt-get update -q \
   && apt-get upgrade -y -q \
-  && apt-get install -y -q --no-install-recommends --auto-remove ncat \
   && rm -rf /var/lib/apt/lists /var/cache/apt/archives \
   && curl --create-dirs -sSLo /usr/share/jenkins/swarm-client.jar ${JENKINS_SWARM_CLIENT_URL} \
   && chmod -R 755 /usr/share/jenkins \

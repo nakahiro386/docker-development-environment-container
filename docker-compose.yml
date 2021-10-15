@@ -77,6 +77,8 @@ services:
       POSTGRES_PASSWORD: ${GITBUCKET_POSTGRES_PASSWORD:-gitbucket}
     volumes:
       - ./gb-postgres/pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "5432"]
     # }}}
 
   &gitbucket gitbucket: # {{{
@@ -135,6 +137,9 @@ services:
     ports:
       # - ${GITBUCKET_PORT:-8080}:${GITBUCKET_PORT:-8080}
       - ${GITBUCKET_SSH_PORT:-29418}:${GITBUCKET_SSH_PORT:-29418}
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "-O", "/dev/null", "http://127.0.0.1:8080/gitbucket/signin"]
+      retries: 10
     depends_on:
       - *gb-postgres
     # }}}
@@ -149,7 +154,6 @@ services:
         SSL_SUBJECT: ${SSL_SUBJECT}
         NGINX_SSL_PORT: ${NGINX_SSL_PORT}
     image: nakahiro386/jenkins:lts
-    stop_signal: SIGINT
     volumes:
       - ./jenkins/home:/var/jenkins_home:rw
     hostname: *jenkins
@@ -173,7 +177,6 @@ services:
         SSL_SUBJECT: ${SSL_SUBJECT}
         NGINX_SSL_PORT: ${NGINX_SSL_PORT}
     image: nakahiro386/jenkins-agent:openjdk8-buster
-    stop_signal: SIGINT
     volumes:
       - ./jenkins-agent/home:/home/jenkins-agent:rw
     hostname: *jenkins-agent
@@ -181,7 +184,10 @@ services:
       JENKINS_URL: http://jenkins:8080/jenkins/
       AGENT_USERNAME: agent
       AGENT_PASSWORD: agent
-      AGENT_PROMETHEUS_PORT: 9100
+      AGENT_PROMETHEUS_PORT: ${AGENT_PROMETHEUS_PORT:-9100}
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "-O", "/dev/null", "http://127.0.0.1:${AGENT_PROMETHEUS_PORT:-9100}/prometheus"]
+      retries: 30
     depends_on:
       - *jenkins
   # }}}
