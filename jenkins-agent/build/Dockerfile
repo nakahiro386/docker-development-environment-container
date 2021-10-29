@@ -29,7 +29,11 @@ RUN set -x \
   && git config --system http."https://${SSL_SUBJECT}:${NGINX_SSL_PORT}/".sslCAInfo /usr/share/jenkins/cert.pem \
   && groupadd -g ${JENKINS_AGENT_GID} ${JENKINS_AGENT_GROUP} \
   && useradd -u ${JENKINS_AGENT_UID} -g ${JENKINS_AGENT_GID} -m -d ${JENKINS_AGENT_HOME} ${JENKINS_AGENT_USER}
+COPY ["settings.xml", "${JENKINS_AGENT_HOME}/.m2/"]
+RUN set -x \
+  && chown -R ${JENKINS_AGENT_USER}:${JENKINS_AGENT_GROUP} ${JENKINS_AGENT_HOME}/.m2
 
 USER ${JENKINS_AGENT_USER}
 WORKDIR ${JENKINS_AGENT_HOME}
+VOLUME ["${JENKINS_AGENT_HOME}"]
 CMD ["/usr/share/jenkins/jenkins-slave.sh"]

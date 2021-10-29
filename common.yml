@@ -5,11 +5,13 @@ services:
   common:
     # image: scratch
     # image: hello-world:latest
-    restart: on-failure:10
+    restart: on-failure:30
     environment:
       TZ: Asia/Tokyo
     volumes:
       - /etc/localtime:/etc/localtime:ro
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
     logging:
       driver: json-file
       options:

@@ -11,6 +11,16 @@ volumes: # {{{
     driver: local
   phpldapadmin-www:
     driver: local
+  jenkins_home:
+    driver_opts:
+      type: none
+      device: ${PWD}/jenkins/home
+      o: bind
+  jenkins-agent_home:
+    driver_opts:
+      type: none
+      device: ${PWD}/jenkins-agent/home
+      o: bind
 # }}}
 
 services:
@@ -155,7 +165,7 @@ services:
         NGINX_SSL_PORT: ${NGINX_SSL_PORT}
     image: nakahiro386/jenkins:lts
     volumes:
-      - ./jenkins/home:/var/jenkins_home:rw
+      - jenkins_home:/var/jenkins_home:rw
     hostname: *jenkins
     environment:
       SSL_SUBJECT: ${SSL_SUBJECT:-$HOSTNAME}
@@ -178,7 +188,7 @@ services:
         NGINX_SSL_PORT: ${NGINX_SSL_PORT}
     image: nakahiro386/jenkins-agent:openjdk8-buster
     volumes:
-      - ./jenkins-agent/home:/home/jenkins-agent:rw
+      - jenkins-agent_home:/home/jenkins-agent:rw
     hostname: *jenkins-agent
     environment:
       JENKINS_URL: http://jenkins:8080/jenkins/
