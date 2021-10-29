@@ -10,4 +10,8 @@ cloudbees-disk-usage-simple:latest
 workflow-aggregator:latest
 git:latest
 gitbucket:latest
+jdk-tool:latest
+openJDK-native-plugin:latest
+adoptopenjdk:latest
 warnings-ng:latest
+jobConfigHistory:latest
