@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.303.2-lts
+FROM jenkins/jenkins:2.303.3-lts
 
 ARG SSL_SUBJECT
 ARG NGINX_SSL_PORT
