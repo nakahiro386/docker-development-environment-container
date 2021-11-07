@@ -10,5 +10,5 @@ HEALTHCHECK --retries=10 CMD ["curl", "-fsSI", "--output", "/dev/null", "http://
 COPY ["plugins.txt", "cert.pem.override", "jenkins.yaml.override", "/usr/share/jenkins/ref/"]
 RUN set -x \
   && git config -f /usr/share/jenkins/ref/.gitconfig.override http."https://${SSL_SUBJECT}:${NGINX_SSL_PORT}/".sslCAInfo /var/jenkins_home/cert.pem
-RUN set -x \
-  && jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
+RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt \
+  && jenkins-plugin-cli --list
