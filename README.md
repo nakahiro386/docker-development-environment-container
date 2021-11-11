@@ -55,7 +55,7 @@
             * Group Base DN
                 * ou=Groups,dc=example,dc=org
             * Group Membership Attribute 
-                * member
+                * uniqueMember
             * Group Filter
                 * ブランク
         * Save settings

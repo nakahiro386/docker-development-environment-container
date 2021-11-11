@@ -65,9 +65,9 @@ jenkins:
       configurations:
       - groupMembershipStrategy:
           fromGroupSearch:
-            filter: "member={0}"
+            filter: "uniqueMember={0}"
         groupSearchBase: "ou=Groups"
-        groupSearchFilter: "(& (cn={0}) (objectclass=groupOfNames))"
+        groupSearchFilter: "(& (cn={0}) (objectclass=groupOfUniqueNames))"
         inhibitInferRootDN: false
         managerDN: "cn=admin,dc=example,dc=org"
         # managerPasswordSecret: "{AQAAABAAAAAQQtUka6utKb4XAl0jnFy8vGB+euegmswXtd8MaTcjYFs=}"
