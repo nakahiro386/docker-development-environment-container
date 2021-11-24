@@ -3,6 +3,7 @@
 CURRENT=$(cd $(dirname $0);pwd)
 # 空ディレクトリでなければ起動できないため、.gitkeepを配置しておくことができない
 mkdir -p "${CURRENT}/gb-postgres/pgdata"
+mkdir -p "${CURRENT}/gitea-db/pgdata"
 mkdir -p "${CURRENT}/jenkins/home"
 mkdir -p "${CURRENT}/jenkins-agent/home"
 

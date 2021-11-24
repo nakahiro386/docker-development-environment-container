@@ -9,6 +9,9 @@ upstream portainer {
 upstream gitbucket {
     server gitbucket:8080;
 }
+upstream gitea {
+    server gitea:3000;
+}
 upstream jenkins {
   keepalive 32; # keepalive connections
   server jenkins:8080; # jenkins ip and port
@@ -103,6 +106,10 @@ server {
     proxy_buffers           4 32k;
     client_max_body_size    500m; # Big number is we can post big commits.
     client_body_buffer_size 128k;
+  }
+
+  location /git/ {
+    proxy_pass  http://gitea/;
   }
 
   location /jenkins {

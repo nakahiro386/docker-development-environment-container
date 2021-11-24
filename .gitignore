@@ -12,10 +12,13 @@ openldap/slapd.d/*
 portainer/data/*
 !portainer/data/.gitkeep
 gb-postgres
+gitea-db
 gitbucket/data/*
 !gitbucket/data/.gitkeep
 gitbucket/plugin/*
 !gitbucket/plugin/.gitkeep
+gitea/*
+!gitea/.gitkeep
 jenkins/build/cert.pem.override
 jenkins/home
 jenkins-agent/build/cert.pem
