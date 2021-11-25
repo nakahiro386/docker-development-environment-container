@@ -52,7 +52,9 @@ services:
     extends:
       file: common.yml
       service: common
-    image: osixia/phpldapadmin:stable
+    build:
+      context: ./phpldapadmin/build
+    image: nakahiro386/phpldapadmin-ja:stable
     hostname: *phpldapadmin
     environment:
       PHPLDAPADMIN_LDAP_HOSTS: *openldap
