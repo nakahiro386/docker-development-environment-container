@@ -242,8 +242,7 @@ services:
       - *gitea-db
   # }}}
 
-  group-sync: # {{{
-    container_name: gitea-group-sync
+  gitea-group-sync: # {{{
     image: ghcr.io/gitea-group-sync/gitea-group-sync:master
     environment:
       GITEA_TOKEN: ${GITEA_TOKEN}
