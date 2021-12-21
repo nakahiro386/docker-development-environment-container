@@ -11,6 +11,8 @@ volumes: # {{{
     driver: local
   phpldapadmin-www:
     driver: local
+  phpldappwm-www:
+    driver: local
   jenkins_home:
     driver_opts:
       type: none
@@ -31,13 +33,14 @@ services:
       service: common
     image: osixia/openldap:stable
     hostname: *openldap
+    command: ["--copy-service"]
     environment:
       - LDAP_ORGANISATION=Example Inc.
       - LDAP_DOMAIN=${LDAP_DOMAIN:-example.org}
       - LDAP_BASE_DN=${LDAP_BASE_DN:-dc=example,dc=org}
       - LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD:-admin}
       - LDAP_CONFIG_PASSWORD=config
-      - LDAP_READONLY_USER=false
+      - LDAP_READONLY_USER=true
       - LDAP_OPENLDAP_UID=${LDAP_OPENLDAP_UID:-911}
       - LDAP_OPENLDAP_GID=${LDAP_OPENLDAP_GID:-911}
     tty: true
@@ -46,6 +49,7 @@ services:
       - ./openldap/ldap:/var/lib/ldap
       - ./openldap/slapd.d:/etc/ldap/slapd.d
       - ./openldap/certs:/container/service/slapd/assets/certs/
+      - ./openldap/ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom:ro
   # }}}
 
   &phpldapadmin phpldapadmin: # {{{
@@ -62,6 +66,25 @@ services:
       - *openldap
     volumes:
       - phpldapadmin-www:/var/www/phpldapadmin
+  # }}}
+
+  &phpldappwm phpldappwm: # {{{
+    extends:
+      file: common.yml
+      service: common
+    build:
+      context: ./phpldapadmin/build
+    image: nakahiro386/phpldapadmin-ja:stable
+    command: ["--copy-service"]
+    hostname: *phpldappwm
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: *openldap
+      PHPLDAPADMIN_SERVER_PATH: "/phpldappwm"
+    depends_on:
+      - *openldap
+    volumes:
+      - phpldappwm-www:/var/www/phpldapadmin
+      - ./phpldapadmin/config/config.php:/container/service/phpldapadmin/assets/config/config.php:ro
   # }}}
 
   &portainer portainer: # {{{
