@@ -3,60 +3,61 @@ ldap_server_uri: "ldap://{{ lookup('env', 'LDAP_HOSTS') }}"
 ldap_bind_dn: "cn=admin,{{ lookup('env', 'LDAP_BASE_DN') }}"
 ldap_bind_pw: "{{ lookup('env', 'LDAP_ADMIN_PASSWORD') }}"
 ldap_users:
-  - cn:
-      - User1
-      - user01
-    sn: Bar1
-    uid: user01
-    userPassword: password1
-    uidnumber: 2001
-    gidnumber: 2001
-    homedirectory: /home/user01
-    mail: user01@example.org
-  - cn:
-      - User2
-      - user02
-    sn: Bar2
-    uid: user02
-    userPassword: password2
-    uidnumber: 2002
-    gidnumber: 2002
-    homedirectory: /home/user02
-    mail: user02@example.org
-  - cn:
-      - User3
-      - user03
-    sn: Bar3
-    uid: user03
-    userPassword: password3
-    uidnumber: 2003
-    gidnumber: 2003
-    homedirectory: /home/user03
-    mail: user03@example.org
-  - cn:
-      - User4
-      - user04
-    sn: Bar4
-    uid: user04
-    userPassword: password4
-    uidnumber: 2004
-    gidnumber: 2004
-    homedirectory: /home/user04
-    mail: user04@example.org
-  - cn:
-      - agent
-    sn: agent
-    uid: agent
-    userPassword: agent
-    uidnumber: 3000
-    gidnumber: 3000
-    homedirectory: /home/agent
+  - cn: agent
     mail: agent@example.org
+    userPassword: agent
+    uid: agent
+    uidnumber: 2000
+    gidnumber: 2000
+    homedirectory: /home/agent
+    sn: jenkins
+    givenName: agent
+    displayName: jenkins　agent
+  - cn: user01
+    mail: user01@example.org
+    userPassword: password1
+    uid: user01
+    uidnumber: 3001
+    gidnumber: 3001
+    homedirectory: /home/user01
+    sn: 姓１
+    givenName: 名１
+    displayName: 姓１　名１
+  - cn: user02
+    mail: user02@example.org
+    userPassword: password2
+    uid: user02
+    uidnumber: 3002
+    gidnumber: 3002
+    homedirectory: /home/user02
+    sn: 姓２
+    givenName: 名２
+    displayName: 姓２　名２
+  - cn: user03
+    mail: user03@example.org
+    userPassword: password3
+    uid: user03
+    uidnumber: 3003
+    gidnumber: 3003
+    homedirectory: /home/user03
+    sn: 姓３
+    givenName: 名３
+    displayName: 姓３　名３
+  - cn: user04
+    mail: user04@example.org
+    userPassword: password4
+    uid: user04
+    uidnumber: 3004
+    gidnumber: 3004
+    homedirectory: /home/user04
+    sn: 姓４
+    givenName: 名４
+    displayName: 姓４　名４
 ldap_groups:
+  - cn: jenkins-agent
+    member:
+      - agent
   - cn: leaders
     member:
       - user01
       - user02
-  - cn: jenkins-agent
-    member:
-      - agent
