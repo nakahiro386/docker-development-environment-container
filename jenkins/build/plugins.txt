@@ -19,3 +19,6 @@ maven-plugin
 junit
 jacoco
 cobertura
+theme-manager
+solarized-theme
+dark-theme

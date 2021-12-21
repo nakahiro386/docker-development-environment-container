@@ -89,10 +89,6 @@ security:
     creationOfLegacyTokenEnabled: false
     tokenGenerationOnCreationEnabled: false
     usageStatisticsEnabled: true
-  queueItemAuthenticator:
-    authenticators:
-    - global:
-        strategy: "triggeringUsersAuthorizationStrategy"
   sSHD:
     port: -1
 unclassified:
@@ -137,6 +133,9 @@ unclassified:
     path: "prometheus"
     processingDisabledBuilds: false
     useAuthenticatedEndpoint: false
+  themeManager:
+    disableUserThemes: false
+    theme: "noOp"
   warningsParsers:
     consoleLogScanningPermitted: false
 tool:
